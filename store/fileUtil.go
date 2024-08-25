@@ -6,7 +6,7 @@ import (
 	"todo-app/todos"
 )
 
-const filename = "store/todo-data.json"
+const filename = "store/data/todo-data.json"
 
 func LoadTodos() ([]todos.Todo, error) {
 	var todoData []todos.Todo
