@@ -4,17 +4,43 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"todo-app/store"
 	"todo-app/todos"
 )
 
 func GetTodos(w http.ResponseWriter, r *http.Request) {
+	filters := todos.GetTodosFilters{
+		Title:    r.URL.Query().Get("title"),
+		Priority: todos.PriorityLevel(r.URL.Query().Get("priority")),
+	}
+
+	// Handle the "completed" filter as a special case (it can be true, false, or not set)
+	if completed := r.URL.Query().Get("completed"); completed != "" {
+		completedValue := completed == "true"
+		filters.Completed = &completedValue
+	}
+
 	todoData, err := store.LoadTodos()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	todosJSONResponse, err := json.Marshal(todoData)
+	// Filter the todos based on the provided filters
+	filteredTodos := []todos.Todo{}
+	for _, todo := range todoData {
+		if filters.Title != "" && !strings.Contains(todo.Title, filters.Title) {
+			continue
+		}
+		if filters.Priority != "" && todo.Priority != filters.Priority {
+			continue
+		}
+		if filters.Completed != nil && todo.Completed != *filters.Completed {
+			continue
+		}
+		filteredTodos = append(filteredTodos, todo)
+	}
+	todosJSONResponse, err := json.Marshal(filteredTodos)
 	if err != nil {
 		http.Error(w, "Failed to encode todos", http.StatusInternalServerError)
 		return

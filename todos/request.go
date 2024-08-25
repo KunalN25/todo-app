@@ -1,5 +1,11 @@
 package todos
 
+type GetTodosFilters struct {
+	Title     string        `json:"title"`
+	Priority  PriorityLevel `json:"priority"`
+	Completed *bool         `json:"completed"`
+}
+
 type AddTodoRequest struct {
 	Title    string        `json:"title"`
 	Priority PriorityLevel `json:"priority"`
