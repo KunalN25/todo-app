@@ -69,5 +69,5 @@ func (t *Todo) ChangePriority(newPriority PriorityLevel) error {
 }
 
 func (t *Todo) String() string {
-	return fmt.Sprintf("Id: %s\tTitle: %s\tCompleted: %v\tPriority:%s", t.Id, t.Title, t.Completed, t.Priority)
+	return fmt.Sprintf("ID: %s\tTitle: %s\tCompleted: %v\tPriority:%s", t.Id, t.Title, t.Completed, t.Priority)
 }
